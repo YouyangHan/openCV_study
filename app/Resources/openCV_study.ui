@@ -1,0 +1,25 @@
+<UI version="4.0" >
+ <class>openCV_studyClass</class>
+ <widget class="QWidget" name="openCV_studyClass" >
+  <property name="objectName" >
+   <string notr="true">openCV_studyClass</string>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>openCV_study</string>
+  </property>$centralwidget$
+ </widget>
+ <layoutDefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources>
+   <include location="openCV_study.qrc"/>
+ </resources>
+ <connections/>
+</UI>
