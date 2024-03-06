@@ -26,16 +26,21 @@ target("openCV_study")
 
     --头文件路径
     add_includedirs("./app")
+    add_includedirs("./basis")
+    
     --ui文件
     add_files("./app/Resources/*.ui")
+    add_files("./basis/Resources/*.ui")
 
     -- metadata head files
     add_files("./app/*.h")
+    add_files("./basis/*.h")
 
     -- qrc files
     add_files("./app/Resources/*.qrc")
     -- cpp files
     add_files("./app/*.cpp")
+    add_files("./basis/*.cpp")
 
 
     --add_ldflags("/MANIFEST", "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"", {force = true})

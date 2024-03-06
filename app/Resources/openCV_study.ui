@@ -35,6 +35,11 @@ text-align: center;
      <string>首页</string>
     </property>
    </item>
+   <item>
+    <property name="text">
+     <string>简介</string>
+    </property>
+   </item>
   </widget>
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
@@ -48,6 +53,7 @@ text-align: center;
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
    </property>
+   <widget class="QWidget" name="page_2"/>
    <widget class="QWidget" name="page_home_page">
     <widget class="QLabel" name="label_openCV_study">
      <property name="geometry">
@@ -71,7 +77,6 @@ color:red;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_2"/>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

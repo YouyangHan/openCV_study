@@ -5,6 +5,8 @@
 
 #include "ui_openCV_study.h"
 
+#include "introduction.h"
+
 namespace Ui{
   class openCV_studyClass;
 }
@@ -23,6 +25,12 @@ public:
     //初始化信号和槽
     void InitConnections();
 
+	//初始化页面
+	void InitPages();
+
 private:
     Ui::openCV_studyClass *ui;
+
+	//简介
+	introduction *introduct;
 };

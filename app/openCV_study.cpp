@@ -10,6 +10,8 @@ openCV_study::openCV_study(QWidget *parent)
     InitWindow();
     //初始化信号和槽
     InitConnections();
+	//初始化页面
+	InitPages();
 }
 
 openCV_study::~openCV_study()
@@ -27,8 +29,16 @@ void openCV_study::InitWindow()
 
 void openCV_study::InitConnections()
 {
+  ui->stackedWidget->setCurrentIndex(1);
   //页面切换
   connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=] (int index) {
-    ui->stackedWidget->setCurrentIndex(index);
+    ui->stackedWidget->setCurrentIndex(index+1);
   });
+}
+
+void openCV_study::InitPages()
+{
+  //简介
+  introduct = new introduction;
+  ui->stackedWidget->addWidget(introduct);
 }
