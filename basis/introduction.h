@@ -32,4 +32,6 @@ private:
     Ui::introductionClass *ui;
 
 	cv::Mat img;
+
+	QString imagePath;
 };
