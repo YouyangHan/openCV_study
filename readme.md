@@ -1,6 +1,6 @@
-库文件下载链接https://download.csdn.net/download/qq_40135848/88914322
+库文件下载链接https://download.csdn.net/download/qq_40135848/88924857
 
-路径为  openCV_study\thirdLib\openCV.pkg
+路径为  openCV_study\thirdLib\OpenCV4.6.0.pkg
 
 xmake使用方法：
 

@@ -46,6 +46,6 @@ target("openCV_study")
     --add_ldflags("/MANIFEST", "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"", {force = true})
     
 
-    add_packages("openCV")
+    add_packages("OpenCV4.6.0")
     add_frameworks("QtCore", "QtGui", "QtWidgets", "QtSql", "QtMultimedia", "QtMultimediaWidgets","QtNetwork","QtWinExtras")
 
