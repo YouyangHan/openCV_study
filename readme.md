@@ -1,4 +1,4 @@
-库文件下载链接https://download.csdn.net/download/qq_40135848/88924857
+库文件下载链接https://download.csdn.net/download/qq_40135848/88930983
 
 路径为  openCV_study\thirdLib\OpenCV4.6.0.pkg
 

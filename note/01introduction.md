@@ -1,6 +1,6 @@
 
 读取图像
-~~~
+```cpp
 
     //图片路径
 	QString appPath = QCoreApplication::applicationDirPath();
@@ -23,4 +23,41 @@
 	//销毁窗口
 	cv::destroyAllWindows();
 
-~~~
+```
+
+保存图像
+
+```cpp
+
+	//保存为png透明通道
+	vector<int>opts;
+	opts.push_back(IMWRITE_PAM_FORMAT_RGB_ALPHA);
+	imwrite("D:/img_bgra.png", img, opts);
+
+
+	//保存为单通道灰度图像
+	img = cv::imread(imagePath.toStdString(), IMREAD_GRAYSCALE);
+	vector<int> opts_gray;
+	opts_gray.push_back(IMWRITE_PAM_FORMAT_GRAYSCALE);
+	imwrite("D:/img_gray.png", img, opts_gray);
+
+	//保存为默认的彩色BGR图像
+	imwrite("D:/img_BGR.png", img);
+
+	//保存为png彩色压缩图像
+	img = imread(imagePath.toStdString(), IMREAD_ANYCOLOR);
+	vector<int> opts_png_anycolor;
+	opts_png_anycolor.push_back(IMWRITE_PAM_FORMAT_GRAYSCALE);
+	opts_png_anycolor.push_back(9);
+	imwrite("D:/img_png_anycolor.png", img, opts_png_anycolor);
+
+	//保存为JPG高压缩比图像
+	img = imread(imagePath.toStdString(), IMREAD_COLOR);
+	vector<int> opts_jpeg;
+	opts_jpeg.push_back(IMWRITE_JPEG_QUALITY);
+	opts_jpeg.push_back(50);
+	opts_jpeg.push_back(IMWRITE_JPEG_OPTIMIZE);
+	opts_jpeg.push_back(1);
+	imwrite("D:/img_jpeg.jpg", img, opts_jpeg);
+
+```
