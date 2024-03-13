@@ -28,6 +28,9 @@ public:
 public slots:
 	void on_pushButton_first_openncv_program_clicked();
 	void on_pushButton_save_image_clicked();
+	void on_pushButton_video_clicked();
+	void on_pushButton_video_info_clicked();
+	void on_pushButton_save_video_clicked();
 private:
     Ui::introductionClass *ui;
 

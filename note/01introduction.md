@@ -1,5 +1,5 @@
 
-读取图像
+# 一、读取图像
 ```cpp
 
     //图片路径
@@ -25,7 +25,7 @@
 
 ```
 
-保存图像
+# 二、保存图像
 
 ```cpp
 
@@ -60,4 +60,86 @@
 	opts_jpeg.push_back(1);
 	imwrite("D:/img_jpeg.jpg", img, opts_jpeg);
 
+```
+
+# 三、加载视频
+
+```cpp
+	//视频路径
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/vtest.avi";
+	cv::VideoCapture capture;
+	capture.open(videoPath.toStdString(),CAP_FFMPEG);
+	//从摄像头读取
+	//capture.open(0, CAP_DSHOW);
+
+	cv::Mat frame;
+	while (true) {
+		//读帧
+		bool ret = capture.read(frame);
+		if (!ret)
+			break;
+		imshow("frame", frame);
+		//添加帧处理 等待 100 毫秒，检查用户是否按下键盘上的按键
+		char c = waitKey(100);
+		//按下的是 ESC 键 (ASCII 值为 27)，则跳出循环，停止播放视频
+		if (c == 27)
+			break;
+	}
+	waitKey(0);
+	destroyAllWindows();
+```
+# 四、获取视频属性
+
+```cpp
+	//视频路径
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/vtest.avi";
+	cv::VideoCapture capture;
+	capture.open(videoPath.toStdString(),CAP_FFMPEG);
+
+	qDebug() << u8"高：" << capture.get(CAP_PROP_FRAME_HEIGHT);
+	qDebug() << u8"宽：" << capture.get(CAP_PROP_FRAME_WIDTH);
+	qDebug() << u8"帧率FPS：" << QString::number(capture.get(CAP_PROP_FPS));
+	qDebug() << u8"总帧率：" << capture.get(CAP_PROP_FRAME_COUNT);
+```
+# 五、保存视频
+
+```cpp
+	//视频路径
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/vtest.avi";
+	cv::VideoCapture capture;
+	capture.open(videoPath.toStdString(), CAP_FFMPEG);
+
+
+	qDebug() << u8"高：" << capture.get(CAP_PROP_FRAME_HEIGHT);
+	qDebug() << u8"宽：" << capture.get(CAP_PROP_FRAME_WIDTH);
+	qDebug() << u8"帧率FPS：" << capture.get(CAP_PROP_FPS);
+	qDebug() << u8"总帧率：" << capture.get(CAP_PROP_FRAME_COUNT);
+
+	//保存视频路径
+	QString savevideoPath = appPath + "/output.avi";
+
+	cv::VideoWriter writer(savevideoPath.toStdString(), capture.get(CAP_PROP_FOURCC), capture.get(CAP_PROP_FPS), Size(capture.get(CAP_PROP_FRAME_WIDTH), capture.get(CAP_PROP_FRAME_HEIGHT)));
+
+	cv::Mat frame;
+	while (true) {
+		//读帧
+		bool ret = capture.read(frame);
+		if (!ret)
+			break;
+		imshow("frame", frame);
+		//添加帧处理 
+		writer.write(frame);
+		//等待 100 毫秒，检查用户是否按下键盘上的按键
+		char c = waitKey(100);
+		//按下的是 ESC 键 (ASCII 值为 27)，则跳出循环，停止播放视频
+		if (c == 27)
+			break;
+	}
+	capture.release();
+	writer.release();
+	waitKey(0);
+	destroyAllWindows();
 ```
