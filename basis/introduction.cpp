@@ -16,7 +16,7 @@ void introduction::on_pushButton_first_openncv_program_clicked()
 {
 	//图片路径
 	QString appPath = QCoreApplication::applicationDirPath();
-	imagePath = appPath + "/sun.png";
+	imagePath = appPath + "/A.jpg";
 
 	//读取图像
 	img = cv::imread(imagePath.toStdString()); //IMREAD_GRAYSCALE 灰度图 IMREAD_UNCHANGED 具有透明通道
@@ -150,4 +150,45 @@ void introduction::on_pushButton_save_video_clicked()
 	writer.release();
 	waitKey(0);
 	destroyAllWindows();
+}
+
+
+
+static void on_track_lightness(int b, void* user_data)
+{
+	Mat image = *((Mat *)user_data);
+	if (image.empty())
+		return;
+	Mat dst = Mat::zeros(image.size(), image.type());
+	Mat m = Mat::zeros(image.size(), image.type());
+
+	addWeighted(image, 1.0, m, 0, b, dst);
+
+	imshow("亮度对比度调节", dst);
+}
+
+static void on_track_contrast(int b, void* user_data)
+{
+	Mat image = *((Mat *)user_data);
+	Mat dst = Mat::zeros(image.size(), image.type());
+	Mat m = Mat::zeros(image.size(), image.type());
+
+	double contrast = b / 100.0;
+	addWeighted(image, contrast, m, 0.0, 0, dst);
+
+	imshow("亮度对比度调节", dst);
+}
+
+void introduction::on_pushButton_brightness_clicked()
+{
+	namedWindow("亮度对比度调节", WINDOW_AUTOSIZE);
+	
+	int lightness = 50;
+	int max_value = 100;
+
+	int contrast_value = 100;
+
+	createTrackbar("Value Bar:", "亮度对比度调节", &lightness, max_value, on_track_lightness,(void*)(&img));
+	createTrackbar("Constrast Bar:", "亮度对比度调节", &contrast_value, 200, on_track_contrast, (void*)(&img));
+	on_track_lightness(50, &img);
 }

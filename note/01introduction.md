@@ -237,3 +237,102 @@ int main() {
 }
 
 ```
+
+# 七、亮度调节demo
+
+```cpp
+Mat src, dst, m;
+int lightness = 50;
+
+static void on_track(int, void *)
+{
+	m = Scalar(lightness, lightness, lightness);
+	//add(src,m,dst);
+	subtract(src, m, dst);
+	imshow("亮度调节", dst);
+}
+
+void on_pushButton_brightness_clicked()
+{
+	namedWindow("亮度调节", WINDOW_AUTOSIZE);
+
+	QString appPath = QCoreApplication::applicationDirPath()+"/A.jpg";
+	src = cv::imread(appPath.toStdString());
+	dst = Mat::zeros(src.size(), src.type());
+	m = Mat::zeros(src.size(), src.type());
+
+	int max_value = 100;
+	
+
+	createTrackbar("Value Bar:", "亮度调节", &lightness, max_value, on_track);
+	on_track(50, 0);
+}
+
+```
+```cpp
+static void on_track(int b, void* user_data)
+{
+	Mat image = *((Mat *)user_data);
+	Mat dst = Mat::zeros(image.size(), image.type());
+	Mat m = Mat::zeros(image.size(), image.type());
+	m = Scalar(b, b, b);
+	//add(image,m,dst);
+	subtract(image, m, dst);
+	imshow("亮度调节", dst);
+}
+
+void introduction::on_pushButton_brightness_clicked()
+{
+	namedWindow("亮度调节", WINDOW_AUTOSIZE);
+	
+	int lightness = 50;
+	int max_value = 100;
+
+	//img为已经读入的图像
+	createTrackbar("Value Bar:", "亮度调节", &lightness, max_value, on_track,(void*)(&img));
+	on_track(50, &img);
+}
+```
+
+# 八、亮度对比度调节
+```cpp
+static void on_track_lightness(int b, void* user_data)
+{
+	Mat image = *((Mat *)user_data);
+	if (image.empty())
+		return;
+	Mat dst = Mat::zeros(image.size(), image.type());
+	Mat m = Mat::zeros(image.size(), image.type());
+
+	addWeighted(image, 1.0, m, 0, b, dst);
+
+	imshow("亮度对比度调节", dst);
+}
+
+static void on_track_contrast(int b, void* user_data)
+{
+	Mat image = *((Mat *)user_data);
+	Mat dst = Mat::zeros(image.size(), image.type());
+	Mat m = Mat::zeros(image.size(), image.type());
+
+	double contrast = b / 100.0;
+	addWeighted(image, contrast, m, 0.0, 0, dst);
+
+	imshow("亮度对比度调节", dst);
+}
+
+void on_pushButton_brightness_clicked()
+{
+	namedWindow("亮度对比度调节", WINDOW_AUTOSIZE);
+	
+	int lightness = 50;
+	int max_value = 100;
+
+	int contrast_value = 100;
+
+	createTrackbar("Value Bar:", "亮度对比度调节", &lightness, max_value, on_track_lightness,(void*)(&img));
+	createTrackbar("Constrast Bar:", "亮度对比度调节", &contrast_value, 200, on_track_contrast, (void*)(&img));
+	on_track_lightness(50, &img);
+}
+
+```

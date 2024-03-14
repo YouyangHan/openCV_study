@@ -91,6 +91,19 @@
     <string>保存视频</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_brightness">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>260</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>亮度调节</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -31,6 +31,7 @@ public slots:
 	void on_pushButton_video_clicked();
 	void on_pushButton_video_info_clicked();
 	void on_pushButton_save_video_clicked();
+	void on_pushButton_brightness_clicked();
 private:
     Ui::introductionClass *ui;
 
