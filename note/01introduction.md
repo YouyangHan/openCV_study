@@ -143,3 +143,97 @@
 	waitKey(0);
 	destroyAllWindows();
 ```
+
+# 六、Mat遍历
+
+1. 数组下标
+```cpp
+for (int row = 0; row < h; row++)
+  {
+	for (int col = 0; col < w; col++)
+	{
+	  if (dim == 1)//灰度图像
+	  {
+		int pv = image.at<uchar>(row,col);//像素是字节类型
+		image.at<uchar>(row, col) = 255 - pv;
+	  }
+	  if (dim == 3)//彩色图像
+	  {
+		Vec3b bgr = image.at<Vec3b>(row, col);
+		image.at<Vec3b>(row, col)[0] = 255 - bgr[0];
+		image.at<Vec3b>(row, col)[1] = 255 - bgr[1];
+		image.at<Vec3b>(row, col)[2] = 255 - bgr[2];
+	  }
+	}
+  }
+
+
+```
+
+2. 指针
+```cpp
+for (int row = 0; row < h; row++)
+{
+	uchar* current_row = image.ptr<uchar>(row);
+	for (int col = 0; col < w; col++)
+	{
+	  if (dim == 1)//灰度图像
+	  {
+		int pv = *current_row;
+		*current_row++ = 255 - *current_row;
+
+	  }
+	  if (dim == 3)//彩色图像
+	  {
+		*current_row++ = 255 - *current_row;
+		*current_row++ = 255 - *current_row;
+		*current_row++ = 255 - *current_row;
+	  }
+	}
+}
+
+
+```
+
+# 七、Mat加减乘除
+```cpp
+#include <opencv2/opencv.hpp>
+
+using namespace cv;
+
+int main() {
+    Mat image = imread("image.jpg");
+
+    if (image.empty()) {
+        std::cout << "无法加载图像" << std::endl;
+        return -1;
+    }
+
+    // 加法变换
+    Mat addResult;
+    add(image, Scalar(50, 50, 50), addResult); // 将像素值增加50
+
+    // 减法变换
+    Mat subtractResult;
+    subtract(image, Scalar(50, 50, 50), subtractResult); // 将像素值减去50
+
+    // 乘法变换
+    Mat multiplyResult;
+    multiply(image, Scalar(0.5, 0.5, 0.5), multiplyResult); // 将像素值乘以0.5
+
+    // 除法变换
+    Mat divideResult;
+    divide(image, Scalar(2.0, 2.0, 2.0), divideResult); // 将像素值除以2.0
+
+    imshow("Original Image", image);
+    imshow("Addition Result", addResult);
+    imshow("Subtraction Result", subtractResult);
+    imshow("Multiplication Result", multiplyResult);
+    imshow("Division Result", divideResult);
+
+    waitKey(0);
+
+    return 0;
+}
+
+```
