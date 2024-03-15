@@ -23,13 +23,13 @@
     </rect>
    </property>
    <property name="text">
-    <string>第一个opennCV程序:加载图像</string>
+    <string>加载图像</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_first_openncv_program">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>7</x>
      <y>40</y>
      <width>131</width>
      <height>31</height>
