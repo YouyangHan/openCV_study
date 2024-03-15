@@ -336,3 +336,48 @@ void on_pushButton_brightness_clicked()
 }
 
 ```
+
+# 九、键盘响应操作
+
+```cpp
+ //图片路径
+  QString appPath = QCoreApplication::applicationDirPath();
+  imagePath = appPath + "/A.jpg";
+
+  //读取图像
+  img = cv::imread(imagePath.toStdString());
+  if (img.empty())
+    return;
+
+  cv::namedWindow("input", cv::WINDOW_AUTOSIZE);
+  //显示图像
+  cv::imshow("input", img);
+
+  Mat dst = Mat::zeros(img.size(),img.type());
+  while (true) {
+    char c = waitKey(100);
+    std::cout << c << std::endl;
+    if (c == 27)
+      break;
+    if (c == 49)//Key 1
+    {
+      cvtColor(img, dst, COLOR_BGR2GRAY);
+    }
+    if (c == 50)//Key 2
+    {
+      cvtColor(img, dst, COLOR_BGR2HSV);
+    }
+    if (c == 51)//Key 3
+    {
+      dst = Scalar(50, 50, 50);
+      add(img, dst, dst);
+    }
+    cv::imshow("input", dst);
+  }
+
+  //参数为0一直阻塞
+  cv::waitKey(0);
+  //销毁窗口
+  cv::destroyAllWindows();
+
+```
