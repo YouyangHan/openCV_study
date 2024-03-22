@@ -117,6 +117,32 @@
     <string>键盘响应</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_color_surface">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>420</y>
+     <width>191</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>openCV自带颜色表</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_logic">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>510</y>
+     <width>191</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>逻辑操作</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

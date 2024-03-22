@@ -340,7 +340,7 @@ void on_pushButton_brightness_clicked()
 # 九、键盘响应操作
 
 ```cpp
- //图片路径
+  //图片路径
   QString appPath = QCoreApplication::applicationDirPath();
   imagePath = appPath + "/A.jpg";
 
@@ -380,4 +380,69 @@ void on_pushButton_brightness_clicked()
   //销毁窗口
   cv::destroyAllWindows();
 
+```
+
+# 十、OpenCV自带颜色表
+```cpp
+  //图片路径
+  QString appPath = QCoreApplication::applicationDirPath();
+  imagePath = appPath + "/A.jpg";
+
+  //读取图像
+  img = cv::imread(imagePath.toStdString());
+  if (img.empty())
+    return;
+
+  cv::namedWindow("input", cv::WINDOW_AUTOSIZE);
+
+  cv::Mat dst;
+
+  int color_map = COLORMAP_AUTUMN;
+  while (true)
+  {
+    int c = cv::waitKey(2000);
+    if (c == 27) {
+      break;
+    }
+    applyColorMap(img, dst, color_map%21);
+    color_map++;
+    cv::imshow("input", dst);
+  }
+
+  cv::waitKey(0);
+  cv::destroyAllWindows();
+
+```
+
+# 十一、图像像素逻辑操作
+```cpp
+  cv::Mat m1 = cv::Mat::zeros(Size(256, 256), CV_8UC3);
+  cv::Mat m2 = cv::Mat::zeros(Size(256, 256), CV_8UC3);
+
+  rectangle(m1, Rect(100, 100, 80, 80),Scalar(255,255,0),-1,LINE_8,0);
+  rectangle(m2, Rect(150, 150, 80, 80), Scalar(0, 255, 255), -1, LINE_8, 0);
+
+  imshow("m1", m1);
+  imshow("m2", m2);
+
+  Mat dst;
+  bitwise_and(m1, m2, dst);
+  imshow("与操作", dst);
+
+  bitwise_or(m1, m2, dst);
+  imshow("或操作", dst);
+
+  QString appPath = QCoreApplication::applicationDirPath();
+  imagePath = appPath + "/A.jpg";
+  img = cv::imread(imagePath.toStdString());
+  if (img.empty())
+    return;
+  bitwise_not(img, dst);
+  imshow("非操作", dst);
+
+  bitwise_xor(m1, m2, dst);
+  imshow("异或操作", dst);
+
+  cv::waitKey(0);
+  cv::destroyAllWindows();
 ```
