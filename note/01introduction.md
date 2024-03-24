@@ -446,3 +446,56 @@ void on_pushButton_brightness_clicked()
   cv::waitKey(0);
   cv::destroyAllWindows();
 ```
+
+# 十二、通道分离、合并、混和
+```cpp
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	std::vector<Mat> mv;
+	cv::split(img, mv);
+
+	imshow("B", mv[0]);
+	imshow("G", mv[1]);
+	imshow("R", mv[2]);
+
+	cv::Mat dst;
+	mv[1] = 0;
+	mv[2] = 0;
+
+	cv::merge(mv, dst);
+	imshow("Blue", dst);
+
+
+	int from_to[] = { 0,2,1,1,2,0 };
+	cv::mixChannels(&img, 1, &dst, 1, from_to,3);
+	imshow("通道混合", dst);
+```
+
+# 十三、图像色彩空间转换
+```cpp
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/sun.png";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+	imshow("img", img);
+	cv::Mat hsv;
+	cv::cvtColor(img,hsv,COLOR_BGR2HSV);
+
+	cv::Mat mask;
+	inRange(hsv, Scalar(0,0,221), Scalar(180,30,255), mask);
+
+	Mat redback = Mat::zeros(img.size(), img.type());
+	redback = Scalar(40, 40, 200);
+	bitwise_not(mask, mask);
+
+	imshow("mask", mask);
+
+	img.copyTo(redback, mask);
+
+	imshow("roi", redback);
+```

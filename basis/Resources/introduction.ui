@@ -143,6 +143,32 @@
     <string>逻辑操作</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_channel">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>600</y>
+     <width>191</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>通道分离合并</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_in_range">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>690</y>
+     <width>191</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像色彩空间转换</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

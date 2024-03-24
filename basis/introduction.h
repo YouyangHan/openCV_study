@@ -32,9 +32,11 @@ public slots:
 	void on_pushButton_video_info_clicked();
 	void on_pushButton_save_video_clicked();
 	void on_pushButton_brightness_clicked();
-  void on_pushButton_keyboard_clicked();
-  void on_pushButton_color_surface_clicked();
-  void on_pushButton_logic_clicked();
+	void on_pushButton_keyboard_clicked();
+	void on_pushButton_color_surface_clicked();
+	void on_pushButton_logic_clicked();
+	void on_pushButton_channel_clicked();
+	void on_pushButton_in_range_clicked();
 private:
     Ui::introductionClass *ui;
 
