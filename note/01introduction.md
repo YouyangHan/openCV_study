@@ -2,7 +2,7 @@
 # 一、读取图像
 ```cpp
 
-    //图片路径
+  //图片路径
 	QString appPath = QCoreApplication::applicationDirPath();
 	QString imagePath = appPath + "/sun.png";
 
@@ -321,7 +321,7 @@ static void on_track_contrast(int b, void* user_data)
 	imshow("亮度对比度调节", dst);
 }
 
-void on_pushButton_brightness_clicked()
+void brightness_demo()
 {
 	namedWindow("亮度对比度调节", WINDOW_AUTOSIZE);
 	
@@ -650,7 +650,7 @@ static void on_draw(int event, int x, int y, int flags,void *user_data)
   }
 }
 
-void introduction::mouse_demo()
+void mouse_demo()
 {
   QString appPath = QCoreApplication::applicationDirPath();
   imagePath = appPath + "/A.jpg";
