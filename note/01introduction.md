@@ -499,3 +499,168 @@ void on_pushButton_brightness_clicked()
 
 	imshow("roi", redback);
 ```
+
+# 十四、图像像素值统计
+```cpp
+  QString appPath = QCoreApplication::applicationDirPath();
+  imagePath = appPath + "/A.jpg";
+  img = cv::imread(imagePath.toStdString());
+  if (img.empty())
+    return;
+
+  double minv, maxv;
+  Point minLoc, maxLoc;
+
+  std::vector<Mat> mv;
+  split(img, mv);
+  for (int i = 0; i < mv.size(); i++)
+  {
+    //图像必须单通道
+    minMaxLoc(mv[i], &minv, &maxv, &minLoc, &maxLoc, cv::Mat());
+    std::cout << "channel" << i << "min value" << minv << "max value" << maxv<<std::endl ;
+  }
+
+  Mat mean, stddev;
+  //计算均值方差
+  meanStdDev(img,mean,stddev);
+  std::cout << "mean" << mean << "stddev" << stddev << std::endl;
+
+```
+
+# 十五、图像几何形状绘制
+```cpp
+  QString appPath = QCoreApplication::applicationDirPath();
+  imagePath = appPath + "/A.jpg";
+  img = cv::imread(imagePath.toStdString());
+  if (img.empty())
+    return;
+
+  Mat bg = Mat::zeros(img.size(),img.type());
+
+  Rect rect;
+  rect.x = 200;
+  rect.y = 200;
+  rect.width = 100;
+  rect.height = 50;
+  rectangle(bg, rect, Scalar(0, 0, 255), -1,8,0);
+  circle(bg, Point(50, 100), 15, Scalar(255, 0, 0), 2);
+  line(bg, Point(100, 100), Point(100, 200), Scalar(0, 255, 0), 2, LINE_AA, 0);
+  RotatedRect rrt(Point(200, 200),Size(100, 200), 90.0);
+  ellipse(bg, rrt, Scalar(0, 255, 255), 2, 8);
+
+  Mat dst;
+  addWeighted(img, 0.7,bg,0.3,0, dst);
+  imshow("Draw", dst);
+```
+
+# 十六、随机数与随机颜色绘制
+```cpp
+  Mat bg = Mat::zeros(Size(512,512), CV_8UC3);
+  int w = bg.cols;
+  int h = bg.rows;
+  RNG rng(12345);
+  while (true)
+  {
+    int c = cv::waitKey(10);
+    if (c == 27) {
+      break;
+    }
+    int x1 = rng.uniform(0, w);
+    int y1 = rng.uniform(0, h);
+    int x2 = rng.uniform(0, w);
+    int y2 = rng.uniform(0, h);
+    bg = Scalar(0, 0, 0);
+    line(bg, Point(x1, y1), Point(x2, y2), Scalar(rng.uniform(0,255), rng.uniform(0, 255), rng.uniform(0, 255)), 2, LINE_AA, 0);
+    imshow("Draw_random", bg);
+  }
+```
+
+# 十七、多边形填充与绘制
+```cpp
+  Mat bg = Mat::zeros(Size(512, 512), CV_8UC3);
+  Point p1(100, 100);
+  Point p2(350, 100);
+  Point p3(450, 280);
+  Point p4(320, 450);
+  Point p5(80, 400);
+  std::vector<Point> pts;
+  pts.push_back(p1);
+  pts.push_back(p2);
+  pts.push_back(p3);
+  pts.push_back(p4);
+  pts.push_back(p5);
+
+  polylines(bg, pts, true, Scalar(0, 0, 255), 2, 8, 0);
+  fillPoly(bg, pts, Scalar(0, 255, 255),8, 0);
+
+  std::vector<std::vector<Point>> contours;
+  contours.push_back(pts);
+  drawContours(bg, contours, -1, Scalar(255, 0, 255), 2);
+
+  imshow("Draw_polygon", bg);
+```
+
+
+# 十八、鼠标操作（画红色方框截取图像）
+```cpp
+Point sp(-1, -1);
+Point ep(-1, -1);
+Mat temp;
+static void on_draw(int event, int x, int y, int flags,void *user_data)
+{
+  Mat image = *((Mat *)user_data);
+  if (event == EVENT_LBUTTONDOWN)
+  {
+    sp.x = x;
+    sp.y = y;
+  }
+  else if (event == EVENT_LBUTTONUP)
+  {
+    ep.x = x;
+    ep.y = y;
+    int dx = ep.x - sp.x;
+    int dy = ep.y - sp.y;
+    if (dx > 0 && dy > 0)
+    {
+      Rect rect(sp.x,sp.y,dx,dy);
+      rectangle(image, rect, Scalar(0, 0, 255), 2, 8, 0);
+      imshow("mouse_draw", image);
+      imshow("roi", image(rect));
+      sp.x = -1;
+      sp.y = -1;
+    }
+  }
+  else if (event == EVENT_MOUSEMOVE)
+  {
+    if (sp.x > 0 && sp.y > 0)
+    {
+      ep.x = x;
+      ep.y = y;
+      int dx = ep.x - sp.x;
+      int dy = ep.y - sp.y;
+      if (dx > 0 && dy > 0)
+      {
+        temp.copyTo(image);
+
+        Rect rect(sp.x, sp.y, dx, dy);
+        rectangle(image, rect, Scalar(0, 0, 255), 2, 8, 0);
+        imshow("mouse_draw", image);
+      }
+    }
+  }
+}
+
+void introduction::mouse_demo()
+{
+  QString appPath = QCoreApplication::applicationDirPath();
+  imagePath = appPath + "/A.jpg";
+  img = cv::imread(imagePath.toStdString());
+  if (img.empty())
+    return;
+  temp = img.clone();
+  namedWindow("mouse_draw", WINDOW_AUTOSIZE);
+  setMouseCallback("mouse_draw", on_draw,(void*)(&img));
+
+  imshow("mouse_draw", img);
+}
+```

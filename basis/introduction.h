@@ -37,6 +37,11 @@ public slots:
 	void on_pushButton_logic_clicked();
 	void on_pushButton_channel_clicked();
 	void on_pushButton_in_range_clicked();
+  void on_pushButton_pixel_statistic_clicked();
+  void on_pushButton_paint_clicked();
+  void on_pushButton_paint_random_clicked();
+  void on_pushButton_paint_polygon_clicked();
+  void on_pushButton_mouse_clicked();
 private:
     Ui::introductionClass *ui;
 
