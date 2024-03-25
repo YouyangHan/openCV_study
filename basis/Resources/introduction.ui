@@ -234,6 +234,45 @@
     <string>鼠标操作与响应</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_pix">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>170</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像像素类型和归一化</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_resize">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>240</y>
+     <width>191</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像放缩与插值</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_rotate">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>320</y>
+     <width>191</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像翻转</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

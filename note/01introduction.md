@@ -664,3 +664,71 @@ void mouse_demo()
   imshow("mouse_draw", img);
 }
 ```
+
+
+# 十九、图像归一化
+```cpp
+
+  QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat dst;
+	img.convertTo(img, CV_32F);
+
+	normalize(img, dst, 1.0, 0, NORM_MINMAX);
+
+	imshow("normalize",dst);
+  ```
+
+  # 二十、图像缩放
+```cpp
+  QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat zoomin, zoomout;
+	int h = img.rows;
+	int w = img.cols;
+
+	cv::resize(img, zoomin, Size(w/2,h/2),0,0,INTER_LINEAR);
+	imshow("zoomin", zoomin);
+
+	cv::resize(img, zoomout, Size(w * 2, h * 2), 0, 0, INTER_LINEAR);
+	imshow("zoomout", zoomout);
+```
+  # 二十、图像翻转
+```cpp
+  QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat dst;
+	flip(img, dst, 0);//上下翻转
+	imshow("flip0", dst);
+	flip(img, dst, 1);//左右翻转
+	imshow("flip1", dst);
+	flip(img, dst, -1);//180°旋转
+	imshow("flip-1", dst);
+
+  int h = img.rows;
+	int w = img.cols;
+	Mat M = getRotationMatrix2D(Point2f(w / 2, h / 2), 45, 1.0);
+
+	double cos = abs(M.at<double>(0, 0));
+	double sin = abs(M.at<double>(0, 1));
+	int nw = cos * w + sin * h;
+	int nh = sin * w + cos * h;
+
+	M.at<double>(0, 2) = M.at<double>(0, 2) + (nw / 2 - w / 2);
+	M.at<double>(1, 2) = M.at<double>(1, 2) + (nh / 2 - h / 2);
+
+	warpAffine(img, dst, M, Size(nw,nh),INTER_LINEAR,0,Scalar(255,0,0));
+	imshow("rotate", dst);
+ ``` 
