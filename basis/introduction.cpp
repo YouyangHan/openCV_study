@@ -580,3 +580,179 @@ void introduction::on_pushButton_rotate_clicked()
 	imshow("rotate", dst);
 
 }
+
+void introduction::on_pushButton_histogram_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+	// 三通道分离
+	std::vector<Mat> bgr_plane;
+	split(img, bgr_plane);
+	// 定义参数变量
+	const int channels[1] = { 0 };
+	const int bins[1] = { 256 };
+	float hranges[2] = { 0,255 };
+	const float* ranges[1] = { hranges };
+	Mat b_hist;
+	Mat g_hist;
+	Mat r_hist;
+	// 计算Blue, Green, Red通道的直方图
+	calcHist(&bgr_plane[0], 1, 0, Mat(), b_hist, 1, bins, ranges);
+	calcHist(&bgr_plane[1], 1, 0, Mat(), g_hist, 1, bins, ranges);
+	calcHist(&bgr_plane[2], 1, 0, Mat(), r_hist, 1, bins, ranges);
+
+	// 显示直方图
+	int hist_w = 512;
+	int hist_h = 400;
+	int bin_w = cvRound((double)hist_w / bins[0]);
+	Mat histImage = Mat::zeros(hist_h, hist_w, CV_8UC3);
+	// 归一化直方图数据
+	normalize(b_hist, b_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+	normalize(g_hist, g_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+	normalize(r_hist, r_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+	// 绘制直方图曲线
+	for (int i = 1; i < bins[0]; i++) {
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(b_hist.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(b_hist.at<float>(i))), Scalar(255, 0, 0), 2, 8, 0);
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(g_hist.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(g_hist.at<float>(i))), Scalar(0, 255, 0), 2, 8, 0);
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(r_hist.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(r_hist.at<float>(i))), Scalar(0, 0, 255), 2, 8, 0);
+	}
+	// 显示直方图
+	namedWindow("Histogram Demo", WINDOW_AUTOSIZE);
+	imshow("Histogram Demo", histImage);
+}
+
+void introduction::on_pushButton_histogram_two_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	// 2D 直方图
+	Mat hsv, hs_hist;
+	cvtColor(img, hsv, COLOR_BGR2HSV);
+	int hbins = 30, sbins = 32;
+	int hist_bins[] = { hbins, sbins };
+	float h_range[] = { 0, 180 };
+	float s_range[] = { 0, 256 };
+	const float* hs_ranges[] = { h_range, s_range };
+	int hs_channels[] = { 0, 1 };
+	calcHist(&hsv, 1, hs_channels, Mat(), hs_hist, 2, hist_bins, hs_ranges, true, false);
+	double maxVal = 0;
+	minMaxLoc(hs_hist, 0, &maxVal, 0, 0);
+	int scale = 10;
+	Mat hist2d_image = Mat::zeros(sbins*scale, hbins * scale, CV_8UC3);
+	for (int h = 0; h < hbins; h++) {
+		for (int s = 0; s < sbins; s++)
+		{
+			float binVal = hs_hist.at<float>(h, s);
+			int intensity = cvRound(binVal * 255 / maxVal);
+			rectangle(hist2d_image, Point(h*scale, s*scale),
+				Point((h + 1)*scale - 1, (s + 1)*scale - 1),
+				Scalar::all(intensity),
+				-1);
+		}
+	}
+	applyColorMap(hist2d_image, hist2d_image, COLORMAP_JET);
+	imshow("H-S Histogram", hist2d_image);
+	imwrite("D:/hist_2d.png", hist2d_image);
+}
+
+void introduction::on_pushButton_histogram_equilibrium_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	imshow("灰度图像", gray);
+	Mat dst;
+	equalizeHist(gray, dst);//只支持单通道灰度图像
+	imshow("直方图均衡化演示", dst);
+}
+
+void introduction::on_pushButton_image_convolute_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat dst;
+	blur(img, dst, Size(15, 15), Point(-1, -1));
+	imshow("图像卷积", dst);
+}
+
+
+void introduction::on_pushButton_gaussian_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat dst;
+	GaussianBlur(img, dst, Size(0, 0), 15);//ksize正数奇数
+	imshow("高斯模糊", dst);
+}
+
+void introduction::on_pushButton_gaussian_two_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	imagePath = appPath + "/A.jpg";
+	img = cv::imread(imagePath.toStdString());
+	if (img.empty())
+		return;
+
+	Mat dst;
+	bilateralFilter(img, dst, 0, 100, 10);
+	imshow("双边模糊", dst);
+}
+
+void introduction::on_pushButton_face_clicked()
+{
+	std::string root_dir = "D:/opencv/sources/samples/dnn/face_detector/";
+	dnn::Net net = dnn::readNetFromTensorflow(root_dir + "opencv_face_detector_uint8.pb", root_dir + "opencv_face_detector.pbtxt");
+	//VideoCapture capture("D:/code/opencv_tutorial_data/images/example_dsh.mp4");
+	VideoCapture capture(0, CAP_DSHOW);
+	Mat frame;
+	while (true) {
+		capture.read(frame);
+		if (frame.empty()) {
+			break;
+		}
+		Mat blob = dnn::blobFromImage(frame, 1.0, Size(300, 300), Scalar(104, 177, 123), false, false);
+		net.setInput(blob);// NCHW
+		Mat probs = net.forward(); 
+		Mat detectionMat(probs.size[2], probs.size[3], CV_32F, probs.ptr<float>());
+		// 解析结果
+		for (int i = 0; i < detectionMat.rows; i++) {
+			float confidence = detectionMat.at<float>(i, 2);
+			if (confidence > 0.5) {
+				int x1 = static_cast<int>(detectionMat.at<float>(i, 3)*frame.cols);
+				int y1 = static_cast<int>(detectionMat.at<float>(i, 4)*frame.rows);
+				int x2 = static_cast<int>(detectionMat.at<float>(i, 5)*frame.cols);
+				int y2 = static_cast<int>(detectionMat.at<float>(i, 6)*frame.rows);
+				Rect box(x1, y1, x2 - x1, y2 - y1);
+				rectangle(frame, box, Scalar(0, 0, 255), 2, 8, 0);
+			}
+		}
+		imshow("人脸检测演示", frame);
+		int c = waitKey(1);
+		if (c == 27) { // 退出
+			break;
+		}
+	}
+}

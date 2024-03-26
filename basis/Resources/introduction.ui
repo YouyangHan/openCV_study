@@ -266,11 +266,102 @@
      <x>590</x>
      <y>320</y>
      <width>191</width>
-     <height>61</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
     <string>图像翻转</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_histogram">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>390</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像直方图</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_histogram_two">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>460</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>二维直方图</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_histogram_equilibrium">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>530</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>直方图均衡化</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_image_convolute">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>610</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像卷积操作</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_gaussian">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>680</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>高斯模糊</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_gaussian_two">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>750</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>高斯双边模糊</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_face">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>820</y>
+     <width>191</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>人脸检测</string>
    </property>
   </widget>
  </widget>

@@ -45,6 +45,13 @@ public slots:
   void on_pushButton_pix_clicked();
   void on_pushButton_resize_clicked();
   void on_pushButton_rotate_clicked();
+  void on_pushButton_histogram_clicked();
+  void on_pushButton_histogram_two_clicked();
+  void on_pushButton_histogram_equilibrium_clicked();
+  void on_pushButton_image_convolute_clicked();
+  void on_pushButton_gaussian_clicked();
+  void on_pushButton_gaussian_two_clicked();
+  void on_pushButton_face_clicked();
 private:
     Ui::introductionClass *ui;
 
