@@ -37,7 +37,12 @@ text-align: center;
    </item>
    <item>
     <property name="text">
-     <string>简介</string>
+     <string>基础</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>实战教程</string>
     </property>
    </item>
   </widget>
