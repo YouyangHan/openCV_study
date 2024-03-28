@@ -38,7 +38,10 @@ void openCV_study::InitConnections()
 
 void openCV_study::InitPages()
 {
-  //¼ò½é
   introduct = new introduction;
   ui->stackedWidget->addWidget(introduct);
+
+  act = new actual;
+  ui->stackedWidget->addWidget(act);
+
 }

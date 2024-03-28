@@ -6,6 +6,7 @@
 #include "ui_openCV_study.h"
 
 #include "introduction.h"
+#include "actual.h"
 
 namespace Ui{
   class openCV_studyClass;
@@ -31,6 +32,9 @@ public:
 private:
     Ui::openCV_studyClass *ui;
 
-	//¼ò½é
+	//»ù´¡
 	introduction *introduct;
+	//ÊµÕ½
+	actual *act;
+
 };
