@@ -52,6 +52,19 @@
     <string>自适应阈值二值化</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_unicom">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>240</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>联通组件</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
