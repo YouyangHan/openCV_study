@@ -25,13 +25,21 @@ public:
     actual(QWidget *parent = nullptr);
     ~actual();
 
-	void ccl_stats_demo(Mat &image);
 public slots:
 	void on_pushButton_two_value_clicked();
 	void on_pushButton_two_value_overrall_clicked();
 	void on_pushButton_two_value_self_clicked();
 
 	void on_pushButton_unicom_clicked();
+	void ccl_stats_demo(Mat &image);
+
+	void on_pushButton_outline_clicked();
+	void on_pushButton_outline_analysis_clicked();
+	void on_pushButton_outline_match_clicked();
+	void contour_info(Mat &image, vector<vector<Point>> &contours);
+	void on_pushButton_outline_fit_clicked();
+	void on_pushButton_outline_fit_circle_clicked();
+	void fit_circle_demo(Mat &image);
 private:
     Ui::actualClass *ui;
 };

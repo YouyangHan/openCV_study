@@ -183,3 +183,263 @@ void actual::ccl_stats_demo(Mat &image)
 	imshow("CCL demo", result);
 
 }
+
+void actual::on_pushButton_outline_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/morph3.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+	namedWindow("input", WINDOW_AUTOSIZE);
+	imshow("input", img);
+
+	//高斯模糊：降噪
+	GaussianBlur(img, img, Size(3, 3), 0);
+
+	//To gray image
+	Mat gray, binary;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	imshow("gray", gray);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+	imshow("BINARY", binary);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(binary, contours, hierachy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());
+	drawContours(img, contours, -1, Scalar(0, 0, 255), 2, 8);
+
+	imshow("outline", img);
+
+	waitKey();
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_outline_analysis_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/zhifang_ball.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+	namedWindow("input", WINDOW_AUTOSIZE);
+	imshow("input", img);
+
+	//高斯模糊：降噪
+	GaussianBlur(img, img, Size(3, 3), 0);
+
+	//To gray image
+	Mat gray, binary;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	imshow("gray", gray);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY_INV | THRESH_OTSU);
+	imshow("BINARY", binary);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(binary, contours, hierachy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
+	for (size_t t = 0; t < contours.size(); t++)
+	{
+		double area = contourArea(contours[t]);
+		double size = arcLength(contours[t],true);
+		qDebug() << "area:" << area << "  " << "size:" << size;
+		if (area < 100 || size < 10) continue;
+		//最大矩形
+		Rect box = boundingRect(contours[t]);
+		rectangle(img,box,Scalar(0,0,255),2,8,0);
+		//最小矩形
+		RotatedRect rrt = minAreaRect(contours[t]);
+		ellipse(img, rrt, Scalar(255, 0, 0), 2, 8);
+
+		Point2f pts[4];
+		rrt.points(pts);
+		for (int i = 0; i < 4; i++)
+		{
+			line(img, pts[i], pts[(i + 1) % 4], Scalar(0, 255, 0), 2, 8);
+		}
+		//绘制轮廓
+		drawContours(img, contours, t, Scalar(0, 0, 255), 2, 8);
+	}
+
+	imshow("outline", img);
+
+	waitKey();
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_outline_match_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	Mat img1 = cv::imread(appPath.toStdString() + "/abc.png");
+	Mat img2 = cv::imread(appPath.toStdString() + "/a5.png");
+	if (img1.empty() || img2.empty()) {
+		return;
+	}
+	imshow("input1", img1);
+	imshow("input2", img2);
+
+	vector<vector<Point>> contours1,contours2;
+	contour_info(img1, contours1);
+	contour_info(img2, contours2);
+
+	Moments mm2 = moments(contours2[0]);
+	Mat hu2;
+	HuMoments(mm2, hu2);
+
+
+	for (size_t t = 0; t < contours1.size(); t++)
+	{
+		Moments mm = moments(contours1[t]);
+		double cx = mm.m10 / mm.m00;
+		double cy = mm.m01 / mm.m00;
+		circle(img1,Point(cx, cy), 3, Scalar(255, 0, 0), 2,8, 0);
+		Mat hu;
+		HuMoments(mm, hu);
+		double dist = matchShapes(hu, hu2, CONTOURS_MATCH_I1,0);
+		if (dist < 1.0)
+		{
+			drawContours(img1, contours1, t, Scalar(0, 0, 255), 2, 8);
+		}
+	}
+
+	imshow("match contrours demo", img1);
+
+
+	waitKey();
+	destroyAllWindows();
+}
+
+void actual::contour_info(Mat &image, vector<vector<Point>> &contours)
+{
+	//高斯模糊：降噪
+	GaussianBlur(image, image, Size(3, 3), 0);
+
+	//To gray image
+	Mat gray, binary;
+	cvtColor(image, gray, COLOR_BGR2GRAY);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+
+	vector<Vec4i> hierachy;
+	findContours(binary, contours, hierachy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
+	
+}
+
+void actual::on_pushButton_outline_fit_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/contours.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+	namedWindow("input", WINDOW_AUTOSIZE);
+	imshow("input", img);
+
+	//高斯模糊：降噪
+	GaussianBlur(img, img, Size(3, 3), 0);
+
+	//To gray image
+	Mat gray, binary;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	imshow("gray", gray);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+	imshow("BINARY", binary);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(binary, contours, hierachy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());
+	//多边形逼近
+	for (size_t t = 0; t < contours.size(); t++)
+	{
+		Moments mm = moments(contours[t]);
+		double cx = mm.m10 / mm.m00;
+		double cy = mm.m01 / mm.m00;
+		circle(img, Point(cx, cy), 3, Scalar(255, 0, 0), 2, 8, 0);
+
+		double area = contourArea(contours[t]);
+		double clen = arcLength(contours[t], true);
+		
+		Mat result;
+		approxPolyDP(contours[t], result, 4, true);
+		qDebug() << result.rows << " " << result.cols;
+
+		if (result.rows == 6)
+		{
+			putText(img, "poly", Point(cx,cy-10), FONT_HERSHEY_PLAIN, 1.0, Scalar(0, 0, 255), 1,8);
+		}
+		if (result.rows == 4)
+		{
+			putText(img, "rectangle", Point(cx, cy - 10), FONT_HERSHEY_PLAIN, 1.0, Scalar(0, 0, 255), 1, 8);
+		}
+		if (result.rows == 3)
+		{
+			putText(img, "trriangle", Point(cx, cy - 10), FONT_HERSHEY_PLAIN, 1.0, Scalar(0, 0, 255), 1, 8);
+		}
+		if (result.rows >10)
+		{
+			putText(img, "circle", Point(cx, cy - 10), FONT_HERSHEY_PLAIN, 1.0, Scalar(0, 0, 255), 1, 8);
+		}
+	}
+
+
+	imshow("多边形逼近", img);
+
+	waitKey();
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_outline_fit_circle_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/draw_circle.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+	namedWindow("input", WINDOW_AUTOSIZE);
+	imshow("input", img);
+
+	fit_circle_demo(img);
+
+	waitKey();
+	destroyAllWindows();
+}
+
+void actual::fit_circle_demo(Mat &image)
+{
+	//To gray image
+	Mat gray, binary;
+	cvtColor(image, gray, COLOR_BGR2GRAY);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(binary, contours, hierachy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
+	//多边形逼近
+	for (size_t t = 0; t < contours.size(); t++)
+	{
+		//drawContours(image, contours, t, Scalar(0, 0, 255), 2, 8);
+		RotatedRect rrt = fitEllipse(contours[t]);
+		float w = rrt.size.width;
+		float h = rrt.size.height;
+		Point center = rrt.center;
+		circle(image, center, 3, Scalar(255.0, 0), 2, 8, 0);
+		ellipse(image, rrt, Scalar(0, 255, 0), 2, 8);
+
+	}
+
+
+	imshow("拟合圆和椭圆", image);
+}

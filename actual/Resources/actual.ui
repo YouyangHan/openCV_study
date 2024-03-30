@@ -65,6 +65,71 @@
     <string>联通组件</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_outline">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>320</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>轮廓分析</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_outline_analysis">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>390</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像轮廓分析</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_outline_match">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>450</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>轮廓匹配</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_outline_fit">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>510</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>轮廓逼近</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_outline_fit_circle">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>570</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>轮廓拟合</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
