@@ -130,6 +130,45 @@
     <string>轮廓拟合</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_hoffman_check">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>640</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>霍夫曼直接检测</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_hoffman_check_line">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>710</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>霍夫曼线段检测</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_hoffman_check_circle">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>770</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>霍夫曼圆检测</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

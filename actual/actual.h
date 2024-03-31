@@ -40,6 +40,10 @@ public slots:
 	void on_pushButton_outline_fit_clicked();
 	void on_pushButton_outline_fit_circle_clicked();
 	void fit_circle_demo(Mat &image);
+
+	void on_pushButton_hoffman_check_clicked();
+	void on_pushButton_hoffman_check_line_clicked();
+	void on_pushButton_hoffman_check_circle_clicked();
 private:
     Ui::actualClass *ui;
 };

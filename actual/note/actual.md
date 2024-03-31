@@ -420,3 +420,136 @@ void actual::fit_circle_demo(Mat &image)
 	imshow("拟合圆和椭圆", image);
 }
 ```
+
+# 四、霍夫曼检测
+
+## 1.霍夫曼检测
+
+```cpp
+void hoffman_check_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/lines.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	//To gray image
+	Mat gray, binary;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+	imshow("BINARY", binary);
+
+	//霍夫曼直线检测
+	vector<Vec3f>lines;
+	HoughLines(binary, lines, 1, CV_PI / 180.0, 100, 0, 0);
+
+	//绘制直线
+	Point pt1, pt2;
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		float rho = lines[i][0];//距离
+		float theta = lines[i][1];//角度
+		float acc = lines[i][2];//累加值
+
+		double a = cos(theta);
+		double b = sin(theta);
+		double x0 = a * rho;
+		double y0 = b * rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
+
+		int angle = round((theta/CV_PI)*180);
+
+		if (rho > 0)//右倾
+		{
+			line(img, pt1, pt2, Scalar(255, 0, 0), 1, 8, 0);
+			if(angle == 90)
+				line(img, pt1, pt2, Scalar(255,255, 0), 1, 8, 0);
+			if (angle <1)//垂直
+				line(img, pt1, pt2, Scalar(0, 255, 255), 1, 8, 0);
+		}
+		else//左倾
+		{
+			line(img, pt1, pt2, Scalar(0, 0, 255), 1, 8, 0);
+		}
+	}
+	imshow("hoffman lines", img);
+	
+
+	waitKey();
+	destroyAllWindows();
+}
+```
+
+## 2.霍夫曼直线检测
+```cpp
+void hoffman_check_line_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/morph01.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	Mat binary;
+	Canny(img, binary, 80, 160, 3, false);
+	imshow("BINARY", binary);
+
+	vector<Vec4i> lines;
+	HoughLinesP(binary, lines, 1, CV_PI / 180.0, 80, 30, 10);
+	Mat result = Mat::zeros(img.size(), img.type());
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		line(result,Point(lines[i][0],lines[i][1]), Point(lines[i][2], lines[i][3]), Scalar(0, 0, 255), 2, 8, 0);
+	}
+	imshow("hoffman linesf", result);
+
+	waitKey();
+	destroyAllWindows();
+}
+```
+
+## 3.霍夫曼圆检测
+```cpp
+void hoffman_check_circle_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/coins.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	//To gray image
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	GaussianBlur(gray, gray, Size(3, 3), 0);
+
+	imshow("Gray", gray);
+
+	vector<Vec3f>circles;
+	double minDist = 20;
+	double min_radius = 15;
+	double max_radius = 70;
+	HoughCircles(gray, circles,HOUGH_GRADIENT, 3, minDist, 100, 100, min_radius,max_radius);
+	for (size_t i = 0; i < circles.size(); i++)
+	{
+		Point center(circles[i][0], circles[i][1]);
+		int radius = round(circles[i][2]);
+		circle(img, center,radius, Scalar(0, 0, 255), 2, 8, 0);
+		circle(img, center,3, Scalar(0, 0, 255), 2, 8, 0);
+	}
+	imshow("circle", img);
+
+	waitKey();
+	destroyAllWindows();
+}
+
+```
