@@ -195,7 +195,7 @@
     <string>腐蚀与膨胀</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_open_close_2">
+  <widget class="QPushButton" name="pushButton_open_close">
    <property name="geometry">
     <rect>
      <x>480</x>

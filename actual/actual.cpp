@@ -565,3 +565,139 @@ void actual::on_pushButton_hoffman_check_circle_clicked()
 	destroyAllWindows();
 }
 
+void actual::on_pushButton_corrosion_expansion_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/LinuxLogo.jpg";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	//To gray image
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+
+	//OTSU
+	Mat binary;
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+	imshow("BINARY", binary);
+
+	Mat erode_img,dilate_img;
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(-1, -1));
+
+	erode(binary, erode_img, kernel);
+	imshow("erode", binary);
+
+	dilate(binary, dilate_img, kernel);
+	imshow("dilate", dilate_img);
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_open_close_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/LinuxLogo.jpg";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	//To gray image
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+
+	//OTSU
+	Mat binary;
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+	imshow("BINARY", binary);
+
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(-1, -1));
+
+	Mat dst_open,dst_close;
+	morphologyEx(binary, dst_open, MORPH_OPEN, kernel, Point(-1, -1), 1, 0);
+	imshow("open", dst_open);
+
+	morphologyEx(binary, dst_close, MORPH_CLOSE, kernel, Point(-1, -1), 1, 0);
+	imshow("close", dst_close);
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_morphological_gradient_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/yuan_test.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	//To gray image
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+
+	Mat basic_grad, inter_grad, exter_grad;
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3), Point(-1, -1));
+
+	morphologyEx(gray, basic_grad, MORPH_GRADIENT, kernel, Point(-1, -1), 1, 0);
+	imshow("MORPH_GRADIENT", basic_grad);
+
+	Mat dst1, dst2;
+	erode(gray, dst1, kernel);
+	dilate(gray, dst2, kernel);
+
+	subtract(gray, dst1, inter_grad);
+	imshow("inter_grad", inter_grad);
+
+	subtract( dst2, gray, exter_grad);
+	imshow("exter_grad", exter_grad);
+
+	Mat binary;
+	threshold(basic_grad,binary,0,255,THRESH_BINARY| THRESH_OTSU);
+	imshow("binary", binary);
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_more_morphological_gradient_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/cross.png";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	//To gray image
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+
+	Mat binary;
+	threshold(gray, binary, 0, 255, THRESH_BINARY_INV | THRESH_OTSU);
+	imshow("binary", binary);
+
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3), Point(-1, -1));
+	Mat dst_tophat;
+	morphologyEx(binary, dst_tophat, MORPH_TOPHAT, kernel, Point(-1, -1), 1, 0);
+	imshow("MORPH_TOPHAT", dst_tophat);//morph3.png
+
+	Mat kernel_ellipse = getStructuringElement(MORPH_ELLIPSE, Size(15, 15), Point(-1, -1));
+	Mat dst_blackhat;
+	morphologyEx(binary, dst_blackhat, MORPH_BLACKHAT, kernel_ellipse, Point(-1, -1), 1, 0);
+	imshow("MORPH_BLACKHAT", dst_blackhat);//morph3.png
+
+	Mat dst_hit_miss;
+	Mat kernel_cross = getStructuringElement(MORPH_CROSS, Size(15, 15), Point(-1, -1));
+	morphologyEx(binary, dst_hit_miss, MORPH_HITMISS, kernel_cross);
+	imshow("MORPH_HITMISS", dst_hit_miss);//cross.png
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+

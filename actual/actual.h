@@ -44,6 +44,11 @@ public slots:
 	void on_pushButton_hoffman_check_clicked();
 	void on_pushButton_hoffman_check_line_clicked();
 	void on_pushButton_hoffman_check_circle_clicked();
+
+	void on_pushButton_corrosion_expansion_clicked();
+	void on_pushButton_open_close_clicked();
+	void on_pushButton_morphological_gradient_clicked();
+	void on_pushButton_more_morphological_gradient_clicked();
 private:
     Ui::actualClass *ui;
 };

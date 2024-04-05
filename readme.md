@@ -2,6 +2,8 @@
 
 路径为  openCV_study\thirdLib\openCV.pkg
 
+图片在source文件夹下，请把图片拷贝到Debug/Release下
+
 xmake使用方法：
 
 1.安装xmake
