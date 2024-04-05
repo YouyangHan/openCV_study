@@ -169,6 +169,71 @@
     <string>霍夫曼圆检测</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>50</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图形形态学处理：</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_corrosion_expansion">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>40</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>腐蚀与膨胀</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_open_close_2">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>100</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>开闭操作</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_morphological_gradient">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>160</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>形态学梯度</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_more_morphological_gradient">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>220</y>
+     <width>141</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>更多形态学操作</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
