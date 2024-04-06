@@ -234,6 +234,19 @@
     <string>更多形态学操作</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_two_value_analysis">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>290</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>二值图像分析</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

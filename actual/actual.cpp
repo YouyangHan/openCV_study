@@ -667,7 +667,7 @@ void actual::on_pushButton_morphological_gradient_clicked()
 void actual::on_pushButton_more_morphological_gradient_clicked()
 {
 	QString appPath = QCoreApplication::applicationDirPath();
-	QString imagePath = appPath + "/cross.png";
+	QString imagePath = appPath + "/two_value.png";
 	Mat img = cv::imread(imagePath.toStdString());
 	if (img.empty()) {
 		return;
@@ -695,6 +695,81 @@ void actual::on_pushButton_more_morphological_gradient_clicked()
 	Mat kernel_cross = getStructuringElement(MORPH_CROSS, Size(15, 15), Point(-1, -1));
 	morphologyEx(binary, dst_hit_miss, MORPH_HITMISS, kernel_cross);
 	imshow("MORPH_HITMISS", dst_hit_miss);//cross.png
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_two_value_analysis_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString imagePath = appPath + "/case6.jpg";
+	Mat img = cv::imread(imagePath.toStdString());
+	if (img.empty()) {
+		return;
+	}
+
+	namedWindow("input", WINDOW_AUTOSIZE);
+	imshow("input", img);
+
+	//¸ßË¹Ä£ºý£º½µÔë
+	GaussianBlur(img, img, Size(3, 3), 0);
+
+	//To gray image
+	Mat gray, binary;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	imshow("gray", gray);
+
+	//OTSU
+	double m_otsu = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+
+	//±Õ²Ù×÷
+	Mat se = getStructuringElement(MORPH_RECT, Size(5, 5), Point(-1, -1));
+	morphologyEx(binary, binary, MORPH_CLOSE, se);
+	
+	imshow("BINARY", binary);
+
+	int height = binary.rows;
+	int width = binary.cols;
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(binary, contours, hierachy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
+	double max_area = -1;
+	int cindex = -1;
+	for (size_t t = 0; t < contours.size(); t++)
+	{
+		Rect rect = boundingRect(contours[t]);
+		if (rect.height >= height || rect.width >= width)continue;
+		double area = contourArea(contours[t]);
+		double size = arcLength(contours[t], true);
+		qDebug() << "area:" << area << "  " << "size:" << size;
+
+		if (area > max_area)
+		{
+			max_area = area;
+			cindex = t;
+		}
+
+		//if (area < 100 || size < 10) continue;
+	
+		//»æÖÆÂÖÀª
+		//drawContours(img, contours, t, Scalar(0, 0, 255), 1, 8);
+	}
+	Mat result = Mat::zeros(img.size(), img.type());
+	drawContours(result, contours, cindex, Scalar(0, 0, 255), 2, 8);
+	drawContours(img, contours, cindex, Scalar(0, 0, 255), 2, 8);
+
+	Mat pts;
+	approxPolyDP(contours[cindex], pts, 8, true);
+	for (int i = 0; i < pts.rows; i++)
+	{
+		Vec2i pt = pts.at<Vec2i>(i, 0);
+		circle(img, Point(pt[0], pt[1]), 2, Scalar(0, 255, 0));
+		circle(result, Point(pt[0], pt[1]), 2, Scalar(0, 255, 0));
+	}
+	imshow("Max contours", img);
+
+	imshow("result", result);
 
 	waitKey(0);
 	destroyAllWindows();
