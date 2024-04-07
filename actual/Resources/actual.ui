@@ -247,6 +247,45 @@
     <string>二值图像分析</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_video">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>370</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>视频读写</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_video_color_converter">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>440</y>
+     <width>141</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>图像色彩空间转换</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_video_histogram_project">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>500</y>
+     <width>141</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>直方图反向投影</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

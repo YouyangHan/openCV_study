@@ -51,6 +51,10 @@ public slots:
 	void on_pushButton_more_morphological_gradient_clicked();
 
 	void on_pushButton_two_value_analysis_clicked();
+
+	void on_pushButton_video_clicked();
+	void on_pushButton_video_color_converter_clicked();
+	void on_pushButton_video_histogram_project_clicked();
 private:
     Ui::actualClass *ui;
 };

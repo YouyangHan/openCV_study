@@ -775,4 +775,123 @@ void actual::on_pushButton_two_value_analysis_clicked()
 	destroyAllWindows();
 }
 
+void actual::on_pushButton_video_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/video.avi";
+	
+	VideoCapture capture("videoPath");
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame",WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width =  capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	VideoWriter writer(QCoreApplication::applicationDirPath().toStdString()+"/test.mp4", type, fps, Size(width, height), true);
+	Mat frame;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		writer.write(frame);
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+	writer.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_video_color_converter_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/01.mp4";
+
+	VideoCapture capture(videoPath.toStdString());
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat frame,hsv,Lab, mask,result;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		cvtColor(frame, hsv, COLOR_BGR2HSV);
+		cvtColor(frame, Lab, COLOR_BGR2Lab);
+		imshow("hsv", hsv);
+		imshow("Lab", Lab);
+
+		inRange(hsv, Scalar(35, 43, 46), Scalar(77, 255, 255), mask);
+		imshow("mask", mask);
+
+		bitwise_not(mask, mask);
+		imshow("mask_not", mask);
+
+		bitwise_and(frame, frame, result, mask);
+		imshow("result", result);
+
+		char c = waitKey(5);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::on_pushButton_video_histogram_project_clicked()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	Mat model = cv::imread(appPath.toStdString() + "/sample.png");
+	Mat src = cv::imread(appPath.toStdString() + "/target.png");
+	if (model.empty() || src.empty()) {
+		return;
+	}
+
+	namedWindow("input", WINDOW_AUTOSIZE);
+	imshow("input", src);
+	imshow("sample", model);
+
+	Mat model_hsv, img_hsv;
+	cvtColor(model, model_hsv, COLOR_BGR2HSV);
+	cvtColor(src, img_hsv, COLOR_BGR2HSV);
+
+	int h_bins = 32, s_bins = 32;
+	int histSize[] = { h_bins,s_bins };
+	int hs_channels[] = { 0, 1 };
+	Mat roiHist;
+	float h_range[] = { 0, 180 };
+	float s_range[] = { 0, 255 };
+	const float* ranges[] = { h_range,s_range };
+	calcHist(&model_hsv, 1, hs_channels, Mat(), roiHist, 2,histSize, ranges, true, false);
+	normalize(roiHist, roiHist, 0, 255, NORM_MINMAX, -1, Mat());
+	MatND backproj;
+	calcBackProject(&img_hsv,1,hs_channels,roiHist,backproj,ranges,1.0);
+
+	imshow("backproj", backproj);
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+
 
