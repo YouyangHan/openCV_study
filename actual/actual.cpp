@@ -893,5 +893,118 @@ void actual::on_pushButton_video_histogram_project_clicked()
 	destroyAllWindows();
 }
 
+void actual::harris_demo(Mat& img)
+{
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	Mat dst;
+	double k = 0.04;
+	int blocksize = 2;
+	int ksize = 3;
+	cornerHarris(gray, dst, blocksize, ksize, k);
+	Mat dst_norm = Mat::zeros(dst.size(), dst.type());
+	normalize(dst, dst_norm, 0, 255, NORM_MINMAX, -1, Mat());
+	convertScaleAbs(dst_norm, dst_norm);
+
+	RNG rng(12345);
+	for (int row = 0; row < img.rows; row++)
+	{
+		for (int col = 0; col < img.cols; col++)
+		{
+			int rsp = dst_norm.at<uchar>(row, col);
+			if (rsp > 200) {
+				int b = rng.uniform(0, 255);
+				int g = rng.uniform(0, 255);
+				int r = rng.uniform(0, 255);
+				circle(img, Point(col, row), 5, Scalar(b, g, r),2,8);
+			}
+		}
+	}
+}
+
+void actual::on_pushButton_Harris_clicked()
+{
+
+	VideoCapture capture(0);
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat frame;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		harris_demo(frame);
+		imshow("result", frame);
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void actual::shittomas(Mat& img)
+{
+	Mat gray;
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+
+	vector<Point2f> corners;
+	double quality_level = 0.01;
+	goodFeaturesToTrack(gray, corners, 200, quality_level, 3,Mat(),3, false);
+
+
+	RNG rng(12345);
+	for (int i = 0; i < corners.size(); i++)
+	{
+		int b = rng.uniform(0, 255);
+		int g = rng.uniform(0, 255);
+		int r = rng.uniform(0, 255);
+		circle(img, corners[i], 5, Scalar(b, g, r), 2, 8);
+	}
+}
+
+void actual::on_pushButton_tomas_clicked()
+{
+	VideoCapture capture(0);
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat frame;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		shittomas(frame);
+		imshow("result", frame);
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
 
 

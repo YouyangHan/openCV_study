@@ -55,6 +55,11 @@ public slots:
 	void on_pushButton_video_clicked();
 	void on_pushButton_video_color_converter_clicked();
 	void on_pushButton_video_histogram_project_clicked();
+
+	void on_pushButton_Harris_clicked();
+	void harris_demo(Mat& img);
+	void on_pushButton_tomas_clicked();
+	void shittomas(Mat& img);
 private:
     Ui::actualClass *ui;
 };
