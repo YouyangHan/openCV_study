@@ -312,6 +312,32 @@
     <string>shi-tomasi角点检测</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_color_follow">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>710</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>基于颜色的对象跟踪</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_video_bg_analysis">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>40</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>视频背景分析</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

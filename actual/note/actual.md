@@ -1056,3 +1056,165 @@ void camera_tomas_demo()
 	destroyAllWindows();
 }
 ```
+
+# 九、基于颜色的对象跟踪
+```cpp
+void process_frame(Mat &img)
+{
+	Mat hsv, mask;
+	cvtColor(img, hsv, COLOR_BGR2HSV);
+	imshow("hsv", hsv);
+
+	inRange(hsv, Scalar(0, 43, 46), Scalar(10, 255, 255), mask);
+	imshow("mask", mask);
+
+	Mat se = getStructuringElement(MORPH_RECT, Size(15, 15));
+	morphologyEx(mask, mask, MORPH_OPEN, se);
+
+	imshow("result", mask);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(mask, contours, hierachy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
+	int index = -1;
+	double max_area = 0;
+	for (size_t t = 0; t < contours.size(); t++)
+	{
+		double area = contourArea(contours[t]);
+		double size = arcLength(contours[t], true);
+		qDebug() << "area:" << area << "  " << "size:" << size;
+		if (area > max_area)
+		{
+			max_area = area;
+			index = t;
+		}
+		if (index > 0) {
+			RotatedRect rrt = minAreaRect(contours[index]);
+			ellipse(img, rrt, Scalar(255, 0, 0), 2, 8);
+			circle(img, rrt.center, 4, Scalar(0, 255, 0), 2, 8, 0);
+		}
+	}
+	imshow("color", img);
+}
+
+void color_follow_demo()
+{
+	VideoCapture capture(0);
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat frame;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		process_frame(frame);
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+
+```
+
+# 十、视频背景分析
+
+基于背景提取的移动对象跟踪
+
+```cpp
+auto pMOG2 = createBackgroundSubtractorMOG2(500, 1000, false);
+void process_frame_video_bg(Mat& img)
+{
+	Mat mask,bgimg;
+	
+	pMOG2->apply(img, mask);
+	pMOG2->getBackgroundImage(bgimg);
+	imshow("mask", mask);
+	imshow("bgimg", bgimg);
+
+	//imshow("color", img);
+}
+
+void process2(Mat& img)
+{
+	Mat mask, bgimg;
+
+	pMOG2->apply(img, mask);
+	
+	//形态学操作
+	Mat se = getStructuringElement(MORPH_RECT, Size(1, 5),Point(-1,-1));
+	morphologyEx(mask, mask, MORPH_OPEN, se);
+	imshow("mask", mask);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierachy;
+	findContours(mask, contours, hierachy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
+	int index = -1;
+	for (size_t t = 0; t < contours.size(); t++)
+	{
+		double area = contourArea(contours[t]);
+		double size = arcLength(contours[t], true);
+		qDebug() << "area:" << area << "  " << "size:" << size;
+		if (area < 100) continue;
+		
+		Rect box = boundingRect(contours[t]);
+		rectangle(img,box, Scalar(0, 0, 255),2,8,0);
+		RotatedRect rrt = minAreaRect(contours[t]);
+		ellipse(img, rrt, Scalar(255, 0, 0), 2, 8);
+		circle(img, rrt.center, 4, Scalar(0, 255, 0), 2, 8, 0);
+	}
+	imshow("people", img);
+}
+
+
+void video_bg_analysis_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/vtest.avi";
+
+	VideoCapture capture(videoPath.toStdString());
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat frame;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		process_frame_video_bg(frame);
+		process2(frame);
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+
+```

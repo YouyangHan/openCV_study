@@ -60,6 +60,12 @@ public slots:
 	void harris_demo(Mat& img);
 	void on_pushButton_tomas_clicked();
 	void shittomas(Mat& img);
+
+	void on_pushButton_color_follow_clicked();
+	void process_frame(Mat& img);
+	void on_pushButton_video_bg_analysis_clicked();
+	void process_frame_video_bg(Mat& img);
+	void process2(Mat& img);
 private:
     Ui::actualClass *ui;
 };
