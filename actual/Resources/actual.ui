@@ -338,6 +338,32 @@
     <string>视频背景分析</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_KTL">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>120</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>KTL光流法原理</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_dense">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>190</y>
+     <width>141</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>稠密光流分析和跟踪演示</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

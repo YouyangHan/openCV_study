@@ -1218,3 +1218,202 @@ void video_bg_analysis_demo()
 
 
 ```
+# 十一、光流法分析
+
+光流可以看成是图像结构光的变化或者图像亮度模式明显的移动
+
+分为稀疏光流和稠密光流
+
+基于相邻视频帧进行分析
+
+
+## 1.KLT光流分析原理
+```cpp
+RNG rng(12345);
+
+void KTL_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/bike.avi";
+
+	VideoCapture capture(videoPath.toStdString());
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat old_frame,old_gray;
+	capture.read(old_frame);
+	cvtColor(old_frame, old_gray, COLOR_BGR2GRAY);
+	vector<Point2f> feature_pts;
+
+	//存储最粗点
+	vector<Point2f> initPoints;
+
+	double quality_level = 0.01;
+	int minDistance = 10;
+	goodFeaturesToTrack(old_gray, feature_pts, 5000,quality_level, minDistance,  Mat(), 3, false);
+	Mat frame,gray;
+	vector<Point2f> pts[2];
+	pts[0].insert(pts[0].end(), feature_pts.begin(), feature_pts.end());
+	initPoints.insert(initPoints.end(), feature_pts.begin(), feature_pts.end());
+	vector<uchar> status;
+	vector<float> err;
+	TermCriteria cireria = TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 10, 0.01);
+
+
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		imshow("frame", frame);
+		cvtColor(frame, gray, COLOR_BGR2GRAY);
+
+		calcOpticalFlowPyrLK(old_gray, gray, pts[0], pts[1], status, err, Size(31, 31), 3, cireria, 0);
+
+		size_t i = 0, k = 0;
+		for (i = 0; i < pts[1].size(); i++) {
+			//距离状态检测
+			double dist = abs(pts[0][i].x - pts[1][i].x) + abs(pts[0][i].y - pts[1][i].y);
+			if (status[i] && dist > 2) {
+				pts[0][k] = pts[0][i];
+				initPoints[k] = initPoints[i];
+				pts[1][k++] = pts[1][i];
+				int b = rng.uniform(0, 255);
+				int g = rng.uniform(0, 255);
+				int r = rng.uniform(0, 255);
+				circle(frame, pts[1][i], 2, Scalar(b, g, r), 2, 8,0);
+				//line(frame, pts[0][i], pts[1][i],Scalar(b, g, r), 2, 8);
+			}
+		}
+		//update key points
+		pts[0].resize(k);
+		pts[1].resize(k);
+		initPoints.resize(k);
+
+		//绘制跟踪线
+		draw_lines(frame,initPoints,pts[1]);
+
+		imshow("KTL", frame);
+
+
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+
+		//update to old
+		std::swap(pts[1], pts[0]);
+		cv::swap(old_gray, gray);
+
+		//re-ini
+		if (pts[0].size() <40)
+		{
+			goodFeaturesToTrack(old_gray, feature_pts, 5000, quality_level,minDistance, Mat(), 3, false);
+			pts[0].insert(pts[0].end(), feature_pts.begin(), feature_pts.end());
+			initPoints.insert(initPoints.end(), feature_pts.begin(), feature_pts.end());
+
+		}
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+void draw_lines(Mat& frame, vector<Point2f> pts1, vector<Point2f> pts2)
+{
+	vector<Scalar> lut;
+	for (size_t t = 0; t < pts1.size(); t++)
+	{
+		int b = rng.uniform(0, 255);
+		int g = rng.uniform(0, 255);
+		int r = rng.uniform(0, 255);
+		lut.push_back(Scalar(b,g,r));
+	}
+	for(size_t t = 0; t < pts1.size();t++)
+	{
+		line(frame, pts1[t], pts2[t], lut[t], 2, 8, 0);
+	}
+}
+
+```
+
+## 2.稠密光流分析
+
+```cpp
+
+void dense_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/vtest.avi";
+
+	VideoCapture capture(videoPath.toStdString());
+	if (!capture.isOpened())
+		return;
+
+	namedWindow("frame", WINDOW_AUTOSIZE);
+
+	int height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	int width = capture.get(CAP_PROP_FRAME_WIDTH);
+	int fps = capture.get(CAP_PROP_FPS);
+	int frame_count = capture.get(CAP_PROP_FRAME_COUNT);
+	int type = capture.get(CAP_PROP_FOURCC);
+
+	Mat frame,preFrame;
+	Mat gray, preGray;
+	capture.read(preFrame);
+	cvtColor(preFrame, preGray, COLOR_BGR2GRAY);
+	Mat hsv = Mat::zeros(preFrame.size(), preFrame.type());
+	Mat mag = Mat::zeros(hsv.size(), CV_32FC1);
+	Mat ang = Mat::zeros(hsv.size(), CV_32FC1);
+	Mat xpts = Mat::zeros(hsv.size(), CV_32FC1);
+	Mat ypts = Mat::zeros(hsv.size(), CV_32FC1);
+	Mat_<Point2f> flow;
+	vector<Mat> mv;
+	split(hsv, mv);
+
+	Mat bgr;
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		cvtColor(frame, gray, COLOR_BGR2GRAY);
+		calcOpticalFlowFarneback(preGray, gray, flow, 0.5, 3, 15, 3, 5, 1.2, 0);
+		for (int row = 0; row < flow.rows; row++)
+		{
+			for (int col = 0; col < flow.cols; col++)
+			{
+				const Point2f& flow_xy = flow.at<Point2f>(row, col);
+				xpts.at<float>(row, col) = flow_xy.x;
+				ypts.at<float>(row, col) = flow_xy.y;
+			}
+		}
+		cartToPolar(xpts, ypts, mag, ang);
+		ang = ang * 180 / CV_PI / 2.0;
+		normalize(mag, mag, 0, 255, NORM_MINMAX);
+		convertScaleAbs(mag, mag);
+		convertScaleAbs(ang, ang);
+		mv[0] = ang;
+		mv[1] = Scalar(255);
+		mv[2] = mag;
+		merge(mv, hsv);
+		cvtColor(hsv, bgr, COLOR_HSV2BGR);;
+
+		imshow("frame", frame);
+		imshow("bgr", bgr);
+		char c = waitKey(50);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+```

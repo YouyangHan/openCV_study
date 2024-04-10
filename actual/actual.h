@@ -66,6 +66,10 @@ public slots:
 	void on_pushButton_video_bg_analysis_clicked();
 	void process_frame_video_bg(Mat& img);
 	void process2(Mat& img);
+
+	void on_pushButton_KTL_clicked();
+	void draw_lines(Mat& frame, vector<Point2f> pts1, vector<Point2f> pts2);
+	void on_pushButton_dense_clicked();
 private:
     Ui::actualClass *ui;
 };
