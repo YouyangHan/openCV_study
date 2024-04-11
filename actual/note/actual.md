@@ -1417,3 +1417,132 @@ void dense_demo()
 	destroyAllWindows();
 }
 ```
+# 十二、均值迁移
+
+## 1. 均值迁移
+
+```cpp
+void mean_shift_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/balltest.mp4";
+
+	VideoCapture capture(videoPath.toStdString());
+	if (!capture.isOpened())
+		return;
+	namedWindow("MeanShift Demo", WINDOW_AUTOSIZE);
+	Mat frame, hsv, hue, mask, hist, backproj;
+	capture.read(frame);
+
+	bool init = true;
+	Rect trackWindow;
+	int hsize = 16;
+	float hranges[] = { 0,180 };
+	const float* ranges = hranges;
+	Rect selection = selectROI("MeanShift Demo", frame, true, false);
+
+
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		
+
+		cvtColor(frame, hsv, COLOR_BGR2HSV);
+		inRange(hsv, Scalar(26,43,46), Scalar(34,255,255), mask);
+
+		int ch[] = { 0,0 };
+		hue.create(hsv.size(), hsv.depth());
+		mixChannels(&hsv, 1, &hue, 1, ch, 1);
+		if (init) {
+			Mat roi(hue, selection),maskroi(mask,selection);
+			calcHist(&roi, 1, 0, maskroi, hist, 1, &hsize, &ranges);
+			normalize(hist, hist, 0, 255, NORM_MINMAX);
+			trackWindow = selection;
+			init = false;
+		}
+		//ms
+		calcBackProject(&hue, 1, 0, hist, backproj, &ranges);
+		backproj &= mask;
+		meanShift(backproj, trackWindow, TermCriteria(TermCriteria::COUNT | TermCriteria::EPS, 10, 1));
+		rectangle(frame, trackWindow, Scalar(0, 0, 255), 3, LINE_AA);
+
+		imshow("MeanShift Demo", frame);
+
+		char c = waitKey(1);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+```
+
+## 2.自适应均值迁移
+
+```cpp
+void cam_shift_demo()
+{
+	QString appPath = QCoreApplication::applicationDirPath();
+	QString videoPath = appPath + "/balltest.mp4";
+
+	VideoCapture capture(videoPath.toStdString());
+	if (!capture.isOpened())
+		return;
+	namedWindow("MeanShift Demo", WINDOW_AUTOSIZE);
+	Mat frame, hsv, hue, mask, hist, backproj;
+	capture.read(frame);
+
+	bool init = true;
+	Rect trackWindow;
+	int hsize = 16;
+	float hranges[] = { 0,180 };
+	const float* ranges = hranges;
+	Rect selection = selectROI("MeanShift Demo", frame, true, false);
+
+
+	while (true)
+	{
+		bool ret = capture.read(frame);
+		if (!ret) break;
+		
+
+		cvtColor(frame, hsv, COLOR_BGR2HSV);
+		inRange(hsv, Scalar(26,43,46), Scalar(34,255,255), mask);
+
+		int ch[] = { 0,0 };
+		hue.create(hsv.size(), hsv.depth());
+		mixChannels(&hsv, 1, &hue, 1, ch, 1);
+		if (init) {
+			Mat roi(hue, selection),maskroi(mask,selection);
+			calcHist(&roi, 1, 0, maskroi, hist, 1, &hsize, &ranges);
+			normalize(hist, hist, 0, 255, NORM_MINMAX);
+			trackWindow = selection;
+			init = false;
+		}
+		//ms
+		calcBackProject(&hue, 1, 0, hist, backproj, &ranges);
+		backproj &= mask;
+		//meanShift(backproj, trackWindow, TermCriteria(TermCriteria::COUNT | TermCriteria::EPS, 10, 1));
+		//rectangle(frame, trackWindow, Scalar(0, 0, 255), 3, LINE_AA);
+
+		cv::RotatedRect rrt = CamShift(backproj, trackWindow, TermCriteria(TermCriteria::COUNT | TermCriteria::EPS, 10, 1));
+		ellipse(frame, rrt, cv::Scalar(255, 0, 0), 2, 8);
+
+		//imshow("MeanShift Demo", frame);
+		imshow("CamShift Demo", frame);
+
+		char c = waitKey(1);
+		if (c == 27)
+			break;
+	}
+	capture.release();
+
+	waitKey(0);
+	destroyAllWindows();
+}
+
+```

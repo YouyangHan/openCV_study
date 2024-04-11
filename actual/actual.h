@@ -70,6 +70,8 @@ public slots:
 	void on_pushButton_KTL_clicked();
 	void draw_lines(Mat& frame, vector<Point2f> pts1, vector<Point2f> pts2);
 	void on_pushButton_dense_clicked();
+
+	void on_pushButton_mean_shift_clicked();
 private:
     Ui::actualClass *ui;
 };

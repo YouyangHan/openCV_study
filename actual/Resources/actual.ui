@@ -364,6 +364,19 @@
     <string>稠密光流分析和跟踪演示</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_mean_shift">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>260</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>均值迁移分析</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
